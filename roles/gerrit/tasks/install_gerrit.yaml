@@ -1,0 +1,57 @@
+---
+
+- name: Create Gerrit User
+  user: name={{gerrit_user}} state=present
+
+- name: Create a folder for Gerrit wars
+  sudo: yes
+  sudo_user: root
+  file: >
+    path={{gerrit_wars_dir}} owner={{gerrit_user}} group={{gerrit_user}}
+    mode=0755 state=directory
+
+- name: fetch Gerrit from googlecode
+  sudo: yes
+  sudo_user: root
+  get_url: >
+    url={{gerrit_download_link}} owner={{gerrit_user}} group={{gerrit_user}}
+    dest="{{gerrit_wars_dir}}/{{gerrit_war_file}}" mode=0755
+
+- name: Stop the Gerrit Service
+  sudo: yes
+  sudo_user: root
+  service: name=gerrit state=stopped
+  ignore_errors: yes  # service may not be setup yet.
+
+- name: Initialize/upgrade the Gerrit site
+  sudo: yes
+  sudo_user: "{{gerrit_user}}"
+  command: >
+    java -jar {{gerrit_wars_dir}}/{{gerrit_war_file}} init --batch --no-auto-start -d {{gerrit_home}}
+
+- name: Create Gerrit.conf
+  sudo: yes
+  sudo_user: "{{gerrit_user}}"
+  template: src=gerrit.config dest={{gerrit_home}}/etc/gerrit.config
+
+- name: Setup the Gerrit service
+  sudo: yes
+  sudo_user: root
+  file: src={{gerrit_home}}/bin/gerrit.sh dest=/etc/init.d/gerrit state=link
+
+- name: Setup gerrit home  in tc
+  sudo: yes
+  sudo_user: root
+  lineinfile: dest=/etc/default/gerritcodereview
+              create=yes
+              state=present
+              regexp="GERRIT_SITE="
+              line="GERRIT_SITE={{gerrit_home}}"
+              owner={{gerrit_user}}
+              group={{gerrit_user}}
+              mode=0644
+
+- name: Start Gerrit Service
+  sudo: yes
+  sudo_user: root
+  service: name=gerrit enabled=yes state=started

@@ -1,0 +1,17 @@
+---
+
+- name: start gerrit
+  sudo: yes
+  sudo_user: root
+  service: name=gerrit state=started enable=yes
+
+- name: stop gerrit
+  sudo: yes
+  sudo_user: root
+  service: name=gerrit state=stopped
+
+- name: restart gerrit
+  sudo: yes
+  sudo_user: root
+  service: name=gerrit state=restarted
+

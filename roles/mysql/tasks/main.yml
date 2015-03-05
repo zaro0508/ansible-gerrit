@@ -1,0 +1,17 @@
+---
+
+- name: Stop the MySql Service
+  sudo: yes
+  sudo_user: root
+  service: name=mysql state=stopped
+  ignore_errors: yes  # service may not be setup yet.
+
+#- include: install_packages.yaml
+
+- name: Setup the MySql DB
+  sudo: yes
+  sudo_user: root
+  mysql_db: name=reviewdb state=present
+  mysql_user: name=root password=password priv=*.*:ALL,GRANT state=present
+
+

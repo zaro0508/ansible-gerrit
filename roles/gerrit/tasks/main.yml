@@ -1,0 +1,4 @@
+---
+
+- include: install_packages.yaml
+- include: install_gerrit.yaml

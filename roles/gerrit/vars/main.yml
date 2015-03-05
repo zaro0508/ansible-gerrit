@@ -1,0 +1,10 @@
+---
+
+java_home: "/usr/lib/jvm/java-7-openjdk-amd64/jre"
+gerrit_war_repo: "http://gerrit-releases.storage.googleapis.com"
+gerrit_war_file: "gerrit-2.9.4.war"
+gerrit_download_link: "{{gerrit_war_repo}}/{{gerrit_war_file}}"
+gerrit_home: "/home/gerrit2/review_site"
+gerrit_wars_dir: "/home/gerrit2/gerrit-wars"
+gerrit_user: "gerrit2"
+gerrit_auth_type: "DEVELOPMENT_BECOME_ANY_ACCOUNT" # options: OPENID
